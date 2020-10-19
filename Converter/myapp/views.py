@@ -165,3 +165,5 @@ class ExcelConverter:
             self.cursor.execute(update_turnover, turnover_execute)
             self.myConnection.commit()
             # Вставка значений, multi не работает
+
+            
