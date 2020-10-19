@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Convert files</title>
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+</head>
+<body>
+<!-- Ссылка на скачивание файла -->
+<strong><a href="{{ link }}"><button><h5>Download this converted file</h5></button></a></strong>
+
+<table style="width:100%">
+<!--  Поиск конвертированного документа  -->
+  <tr>
+      {% for c in column_names %}
+      <th>{{c}}</th>
+      {% endfor %}
+  </tr>
+    {% for x  in items %}
+        <tr>
+            {% for k, v in x.items %}
+            <td>{{ v }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>

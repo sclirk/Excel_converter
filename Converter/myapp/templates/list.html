@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <title>Upload Files</title>
+        <script>
+            <!--  -->
+
+            function call_counter(url, doc_name) {
+
+               alert(url + '/' + doc_name);
+               window.open(url + '?docname=' + doc_name);
+            }
+        </script>
+    </head>
+
+    <body>
+        <!-- Поиск документа -->
+        {% if documents %}
+            Files in DB:
+            <ul>
+                {% for x in documents %}
+                <!--      Функционал кнопки конвертирования              -->
+                    <li><a href="{{ document.docfile.url }}">{{ x.docfile.name }}</a></li>
+                    <button onclick="call_counter('/conv', '{{ x.docfile.name }}');">
+                        Конвертировать
+                    </button>
+                {% endfor %}
+            </ul>
+        {% else %}
+        <!--    Файл не был загружен    -->
+            <p> Files not uploaded.</p>
+        {% endif %}
+        <form action="{% url 'my-view' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ message }}
+            <p>{{ form.non_field_errors }}</p>
+
+            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+
+            <p>
+                {{ form.docfile.errors }}
+                {{ form.docfile }}
+            </p>
+            <p><input type="submit" value="Загрузить файл"/></p>
+        </form>
+    </body>
+</html>
