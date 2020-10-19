@@ -6,11 +6,12 @@ import pandas as pd
 from .excel_converter import Convert
 import os
 
-myConnection = psycopg2.connect(host="127.0.0.1",
+myConnection = psycopg2.connect(dbname="127.0.0.1",
                                 user='root',
                                 passwd='1111',
                                 db='execute_schema')  # Коннектор к бд
 
+myConnection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
 def read_all_database():  # Функция чтения всех данных с заданных колонок
     column_names = [
@@ -102,10 +103,11 @@ def my_view(request):
 
 class ExcelConverter:
     def __init__(self, csv_file_path='C:/Users/spectra/Desktop/Excel_file.csv'):
-        self.myConnection = psycopg2.connect(host="127.0.0.1",
+        self.myConnection = psycopg2.connect(dbname="127.0.0.1",
                                              user='root',
                                              passwd='1111',
                                              db='execute_schema')
+        self.myConnection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         self.cursor = self.myConnection.cursor()
         self.data = pd.read_csv(csv_file_path, encoding='cp1251')
         self.nan_value = float("NaN")
@@ -132,12 +134,15 @@ class ExcelConverter:
         self.df.rename(columns={'Название банка': 'ID', 'Unnamed: 1': 'in_sald_act', 'Unnamed: 2': 'in_sald_pass',
                                 'Unnamed: 3': 'debit', ' ': 'credit', 'Unnamed: 5': 'out_sald_act',
                                 'Unnamed: 6': 'out_sald_pass'}, inplace=True)
+        # Переименование полученных колон под нужный excel файл
 
         self.df.replace("", self.nan_value, inplace=True)
         self.df.dropna(subset=["in_sald_act"], inplace=True)
         self.df.drop(self.df.loc[self.df['ID'] == "БАЛАНС"].index, inplace=True)
-
+        # Пропуск пустых строк
+        
         for row in self.df.itertuples():
+          # Поиск строк в датафрейме и вставка значений в них
             self.id += 1
             update_bank_id = "INSERT INTO turnover_sheet.bank_id (ID, bank_id)" \
                              " VALUES (%s, %s);"
