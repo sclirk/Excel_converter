@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from .models import Document
 from .forms import DocumentForm
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import pandas as pd
 from .excel_converter import Convert
 import os
